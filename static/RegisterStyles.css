@@ -1,0 +1,66 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    height:70%;
+    width:30%;
+  }
+
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+  }
+  
+  
+  
+  form {
+        border: 1px solid black;
+        padding: 20px;
+        border-radius: 5px;
+       
+      
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+  }
+
+
+/* styles.css (create a new file styles.css in your static folder) */
+
+
+  
+  /* Add any additional styles for the form container here, e.g., width, max-width, padding, etc. */
+  
+form input[type="text"],
+form input[type="email"],
+form select,
+form textarea {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+  .email-input {
+    height: 40px; /* You can adjust the height as needed */
+  }
+  input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

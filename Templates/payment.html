@@ -1,0 +1,75 @@
+<!-- payment.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Payment Details</h1>
+  <form id="payment-form" method="post">
+    {% csrf_token %}
+    <label for="card-element">
+      Credit or debit card
+    </label>
+    <div id="card-element">
+      <!-- A Stripe Element will be inserted here. -->
+    </div>
+    <button id="submit-payment" type="submit">Pay Now</button>
+  </form>
+  <div id="payment-error" role="alert"></div>
+
+  <!-- Add Stripe.js script to the bottom of the template -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    // Your Stripe public key (replace with your actual Stripe publishable key)
+    const stripePublicKey = 'pk_test_51NbmUnSDi0uSGhnZwnYrUXEODkD76PakH81lcm7gIZ47pY4ZJipfsDHHheb4psJnl3NOkNM8P7735PANOWxHovvm00hsCsFdPT';
+
+    // Create a Stripe instance with your public key
+    const stripe = Stripe(stripePublicKey);
+
+    // Create a Stripe Elements instance
+    const elements = stripe.elements();
+
+    // Create a Card Element and mount it to the "card-element" div
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+
+    // Handle form submission and process payment with Stripe
+    const form = document.getElementById('payment-form');
+    const paymentError = document.getElementById('payment-error');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      paymentError.textContent = ''; // Clear any previous error messages
+
+      try {
+        // Create a PaymentIntent with your server
+        const response = await fetch('/create-payment-intent/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}', // Include the CSRF token
+          },
+        });
+
+        const data = await response.json();
+
+        // Confirm the payment with Stripe using the client secret from the server
+        const result = await stripe.confirmCardPayment(data.clientSecret, {
+          payment_method: {
+            card: cardElement,
+          },
+        });
+
+        if (result.error) {
+          // Display error message to the user
+          paymentError.textContent = result.error.message;
+        } else {
+          // Payment succeeded, redirect to confirmation page
+          window.location.href = '/confirmation/';
+        }
+      } catch (error) {
+        // Handle any other errors that may occur during the payment process
+        paymentError.textContent = 'An error occurred. Please try again.';
+      }
+    });
+  </script>
+{% endblock %}
